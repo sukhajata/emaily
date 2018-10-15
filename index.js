@@ -24,5 +24,16 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
+if (process.env.NODE_ENV === 'production' ) {
+    //ensure express serves production assets
+    app.use(express.static('client/build'));
+
+    //ensure express serves index.html if route not recognised
+    const path = require('path');
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+}
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
